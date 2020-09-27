@@ -10,12 +10,12 @@
  */
 struct
 bbx_queue{
-	int head, tail;
-	char *args[Q_SIZE]; 
+	int head, tail, cap; //cap = capacidade
+	char *args[0]; 
 };
 
 char *bbx_peek(struct bbx_queue *q);
 char *bbx_dequeue(struct bbx_queue *q);
 char *bbx_enqueue(struct bbx_queue *q, char *str);
-void bbx_queue_init(struct bbx_queue *q);
-void bbx_queue_stats(struct bbx_queue *q);
+struct bbx_queue *bbx_queue_init(int size);
+void bbx_queue_show_stats(struct bbx_queue *q);

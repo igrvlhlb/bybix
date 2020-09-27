@@ -21,38 +21,45 @@ bbx_flags xflags;
 void bbx_chtop(bbx_flags fopt);
 void bbx_chtof(bbx_flags fopt);
 void bbx_opt_printf();
-void enqueue_nums(int argc, char *argv[]); 	/* verifica se ha numeros negativos em vargs
-						 *  e os enfilera (getopt achara que sao opcoes) */
+void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]); 	/* verifica se ha numeros negativos em vargs
+									 *  e os enfilera (getopt achara que sao opcoes) */
+void backup_argv(struct bbx_queue *q, int argc, char *argv[]);
 				
-struct bbx_queue bbxq;
-
 static  const 
-struct bbx_flag_s itags[8] =
+struct bbx_flag_s itags[NO_FLAGS] =
 {
 	{bbx_char, "Char"},
 	{bbx_short, "ShortInt"},
 	{bbx_int, "Int"},
 	{bbx_float, "Float"},
-	{bbx_word, "Word"}
+	{bbx_word, "Word"},
+	{bbx_str, "Str"}
 };
 static const
-struct bbx_flag_s mtags[3] =
+struct bbx_flag_s mtags[NO_MFLAGS] =
 {
 	{bbx_hex, "Hex"},
 	{bbx_bin, "Bin"},
 	{bbx_long, "Long"},
 };
 
-const char bbx_types[] = "chifwxblV";
+const char bbx_types[] = "chifwxblsV";
 
 struct bbx_queue *parse_opt(int argc, char *argv[]){
 	signed char opt;
 	iflags = 0;
 	xflags = 0;
 	opterr = 0; //suprime mensagens de erro do getopt()
-
-	bbx_queue_init(&bbxq);
-	enqueue_nums(argc, argv);
+	
+	struct bbx_queue *retptr; 	//ponteiro que sera retornado dependendo
+					//das opcoes selecionadas
+	struct bbx_queue *nums, *argscpy; 	//numeros em argv e uma copia de
+						//argv antes da chamada de getopt()
+	nums = bbx_queue_init(argc);
+	argscpy = bbx_queue_init(argc);
+	
+	backup_argv(argscpy, argc, argv);
+	enqueue_nums(nums, argc, argv);
 
 	/* variaveis para fins de depuração */
 	int iter = 0;
@@ -92,9 +99,14 @@ struct bbx_queue *parse_opt(int argc, char *argv[]){
 				bbx_chtop(bbx_word);
 				iter++;
 				break;
+			case 's': //string
+				bbx_chtop(bbx_str);
+				iter++;
+				break;
 			case 'V': //verbose (debug)
 				bbx_set_flag(xflags, bbx_debug);
 				iter++;
+				break;
 			default: //neste caso, possivelmente e um numero negativo
 				if(optind < argc - 1){
 					optind+=1; /* evita que as opcoes sejam lidas caso
@@ -108,7 +120,9 @@ FIM_OPT:
 		printf("%d opcoes foram lidas na entrada\nFlags para impressao:\t", iter);
 		bbx_opt_printf();
 	}
-	return &bbxq;
+	if(bbx_flag_isset(iflags, bbx_str)) retptr = argscpy;
+	else retptr = nums;
+	return retptr;
 }
 
 /* change-to-option */
@@ -146,25 +160,36 @@ inline void bbx_opt_printf(){
 	printf("]\n");
 }
 
-inline void enqueue_nums(int argc, char *argv[]){
+inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]){
 	char *str;
 	int optc = 0;
 	for(int i = 1; i < argc; i++){
 		str=argv[i]; //i-esimo argv
 		if( '0' <= str[0] && str[0] <= '9' ){
-			if( bbx_enqueue(&bbxq, str) != Q_ERR ) continue;
+			if( bbx_enqueue(q, str) != Q_ERR ) continue;
 			else{
-				bbx_queue_stats(&bbxq);
+				bbx_queue_show_stats(q);
 				exit(1);
 			}
 		} else if(str[0] == '-'){
 			if( '0' <= str[1] && str[1] <= '9' ){
-				if( bbx_enqueue(&bbxq, str) != Q_ERR ) continue;
+				if( bbx_enqueue(q, str) != Q_ERR ) continue;
 				else{
-					bbx_queue_stats(&bbxq);
+					bbx_queue_show_stats(q);
 					exit(1);
 				}
 			} else optc += 1; //e uma opcao 
+		}
+	}
+}
+inline void backup_argv(struct bbx_queue *q, int argc, char *argv[]){
+	char *str;
+	for(int i = 1; i < argc; i++){
+		str=argv[i]; //i-esimo argv
+		if( bbx_enqueue(q, argv[i]) != Q_ERR ) continue;
+		else{
+			bbx_queue_show_stats(q);
+			exit(1);
 		}
 	}
 }

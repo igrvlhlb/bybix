@@ -17,12 +17,13 @@
 #define		bbx_isanyf	((bbx_isfp) | (bbx_issn))
 
 /* opcoes para impressao */
-#define		NO_FLAGS		5	/* flags para impressao */
+#define		NO_FLAGS		6	/* flags para impressao */
 #define 	bbx_char 		1	/* char (1 byte) */
 #define 	bbx_short 		2
 #define 	bbx_int 		4	   
 #define 	bbx_float 		8	   
 #define 	bbx_word		16	/* (1 word) */
+#define		bbx_str			32
 
 /* opcoes extras  */			
 #define		NO_MFLAGS		3
@@ -36,7 +37,7 @@
 #define 	bbx_double	((bbx_long) | (bbx_float))
 
 #define	 bbx_any	((bbx_char) | (bbx_short) | (bbx_int)\
-			|(bbx_float) | (bbx_word))
+			|(bbx_float) | (bbx_word) | (bbx_str))
 
 #define	 bbx_anyf	((bbx_hex) | (bbx_bin))
 
