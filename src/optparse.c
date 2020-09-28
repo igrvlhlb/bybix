@@ -1,9 +1,9 @@
-#include<unistd.h>
-#include<stdio.h>
-#include<stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "optparse.h"
 #include "flags.h"
-#include "bbx-queue.h"
+#include "queue.h"
 
 /*	importante:
  *		tipos = 	{c,h,i,f,p}
