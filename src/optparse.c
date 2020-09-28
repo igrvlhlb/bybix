@@ -115,6 +115,10 @@ struct bbx_queue *parse_opt(int argc, char *argv[]){
 				break;
 		}
 	}
+	if(iter==0 || !bbx_flag_isset(iflags, bbx_any)){
+		fprintf(stderr, "Erro: nenhum tipo especificado.\nTerminando...\n");
+		exit(1);
+	}
 FIM_OPT:
 	if(bbx_flag_isset(xflags, bbx_debug)) {
 		printf("%d opcoes foram lidas na entrada\nFlags para impressao:\t", iter);
