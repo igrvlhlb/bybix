@@ -2,14 +2,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-inline char *bbx_peek(struct bbx_queue *q){
+inline char *bbx_peek(struct bbx_queue *q)
+{
 	if( q->head != q->tail ){
 		return q->args[q->head];
 	}
 	else return Q_ERR; //vazia
 }
 
-inline char *bbx_dequeue(struct bbx_queue *q){
+inline char *bbx_dequeue(struct bbx_queue *q)
+{
 	if( q->head != q->tail ){
 		char *res = q->args[q->head];
 		q->head = (q->head + 1) % q->cap;
@@ -17,7 +19,8 @@ inline char *bbx_dequeue(struct bbx_queue *q){
 	} else return Q_ERR; //vazia
 }
 
-inline char *bbx_enqueue(struct bbx_queue *q, char *str){
+inline char *bbx_enqueue(struct bbx_queue *q, char *str)
+{
 	if( q->head != q->tail ){
 		q->args[q->tail] = str; //adiciona ponteiro para string
 		q->tail = (q->tail + 1) % q->cap;
@@ -26,7 +29,8 @@ inline char *bbx_enqueue(struct bbx_queue *q, char *str){
 	} else return Q_ERR;
 }
 
-inline struct bbx_queue *bbx_queue_init(int size){
+inline struct bbx_queue *bbx_queue_init(int size)
+{
 	struct bbx_queue *q = malloc(sizeof(struct bbx_queue)+(sizeof(char*)*size));
 	q->head = -1;
 	q->tail = 0;
@@ -34,7 +38,8 @@ inline struct bbx_queue *bbx_queue_init(int size){
 	return q;
 }
 
-inline void bbx_queue_show_stats(struct bbx_queue *q){
+inline void bbx_queue_show_stats(struct bbx_queue *q)
+{
 	fprintf(stderr, "head:\t%d\n"
 			"tail:\t%d\n"
 			"*head:\t%s\n"

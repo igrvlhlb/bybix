@@ -45,7 +45,8 @@ struct bbx_flag_s mtags[NO_MFLAGS] =
 
 const char bbx_types[] = "chifwxblsV";
 
-struct bbx_queue *parse_opt(int argc, char *argv[]){
+struct bbx_queue *parse_opt(int argc, char *argv[])
+{
 	signed char opt;
 	iflags = 0;
 	xflags = 0;
@@ -130,21 +131,24 @@ FIM_OPT:
 }
 
 /* change-to-option */
-inline void bbx_chtop(bbx_flags fopt){
+inline void bbx_chtop(bbx_flags fopt)
+{
 	if(bbx_flag_isset(iflags,  bbx_any)){
 		bbx_unset_flag(iflags, bbx_any);
 	}
 	bbx_set_flag(iflags, fopt);
 }
 /* change-to-extra_flag */
-inline void bbx_chtof(bbx_flags fopt){
+inline void bbx_chtof(bbx_flags fopt)
+{
 	if(xflags & bbx_anyf){
 		bbx_unset_flag(xflags, bbx_anyf);
 	}
 	bbx_set_flag(xflags, fopt);
 }
 
-inline void bbx_opt_printf(){
+inline void bbx_opt_printf()
+{
 	int impressos = 0;
 	putchar('[');
 	for(int i = 0; i < NO_MFLAGS; i++){
@@ -164,7 +168,8 @@ inline void bbx_opt_printf(){
 	printf("]\n");
 }
 
-inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]){
+inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[])
+{
 	char *str;
 	int optc = 0;
 	for(int i = 1; i < argc; i++){
@@ -186,7 +191,8 @@ inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]){
 		}
 	}
 }
-inline void backup_argv(struct bbx_queue *q, int argc, char *argv[]){
+inline void backup_argv(struct bbx_queue *q, int argc, char *argv[])
+{
 	char *str;
 	for(int i = 1; i < argc; i++){
 		str=argv[i]; //i-esimo argv
