@@ -8,5 +8,8 @@ optparse.o: optparse.c optparse.h queue.* flags.h
 queue.o: queue.c queue.h flags.h
 	${CC} ${CFLAGS} -c $< -o $@
 
+tcheck.o: tcheck.c
+	${CC} ${CFLAGS} -c $< -o $@
+
 clean:
 	rm *.o

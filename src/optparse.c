@@ -21,10 +21,11 @@ bbx_flags xflags;
 void bbx_chtop(bbx_flags fopt);
 void bbx_chtof(bbx_flags fopt);
 void bbx_opt_printf();
-void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]); 	/* verifica se ha numeros negativos em vargs
-									 *  e os enfilera (getopt achara que sao opcoes) */
+/* verifica se ha numeros negativos em vargs
+ * e os enfilera (getopt achara que sao opcoes) */
+void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]);
 void backup_argv(struct bbx_queue *q, int argc, char *argv[]);
-				
+
 static  const 
 struct bbx_flag_s itags[NO_FLAGS] =
 {
@@ -51,11 +52,13 @@ struct bbx_queue *parse_opt(int argc, char *argv[])
 	iflags = 0;
 	xflags = 0;
 	opterr = 0; //suprime mensagens de erro do getopt()
-	
-	struct bbx_queue *retptr; 	//ponteiro que sera retornado dependendo
-					//das opcoes selecionadas
-	struct bbx_queue *nums, *argscpy; 	//numeros em argv e uma copia de
-						//argv antes da chamada de getopt()
+	/* ponteiro que sera retornado dependendo
+	 * das opcoes selecionadas */
+	struct bbx_queue *retptr; 	
+	/* numeros em argv e uma copia de				
+	 * argv antes da chamada de getopt()*/
+	struct bbx_queue *nums, *argscpy; 	
+						
 	nums = bbx_queue_init(argc);
 	argscpy = bbx_queue_init(argc);
 	
@@ -117,12 +120,14 @@ struct bbx_queue *parse_opt(int argc, char *argv[])
 		}
 	}
 	if(iter==0 || !bbx_flag_isset(iflags, bbx_any)){
-		fprintf(stderr, "Erro: nenhum tipo especificado.\nTerminando...\n");
+		fprintf(stderr, "Erro: nenhum tipo especificado.\n"
+				"Terminando...\n");
 		exit(1);
 	}
 FIM_OPT:
 	if(bbx_flag_isset(xflags, bbx_debug)) {
-		printf("%d opcoes foram lidas na entrada\nFlags para impressao:\t", iter);
+		printf("%d opcoes foram lidas na entrada\n"
+				"Flags para impressao:\t", iter);
 		bbx_opt_printf();
 	}
 	if(bbx_flag_isset(iflags, bbx_str)) retptr = argscpy;
