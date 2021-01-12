@@ -5,7 +5,7 @@
 inline char *bbx_peek(struct bbx_queue *q)
 {
 	if( q->head != q->tail ){
-		return q->args[q->head];
+		return q->args[q->head].str;
 	}
 	else return Q_ERR; //vazia
 }
@@ -13,7 +13,7 @@ inline char *bbx_peek(struct bbx_queue *q)
 inline char *bbx_dequeue(struct bbx_queue *q)
 {
 	if( q->head != q->tail ){
-		char *res = q->args[q->head];
+		char *res = q->args[q->head].str;
 		q->head = (q->head + 1) % q->cap;
 		return res;
 	} else return Q_ERR; //vazia
@@ -22,7 +22,7 @@ inline char *bbx_dequeue(struct bbx_queue *q)
 inline char *bbx_enqueue(struct bbx_queue *q, char *str)
 {
 	if( q->head != q->tail ){
-		q->args[q->tail] = str; //adiciona ponteiro para string
+		q->args[q->tail].str = str; //adiciona ponteiro para string
 		q->tail = (q->tail + 1) % q->cap;
 		if( q->head == -1 ) q->head+=1; //lista populada; agora head = 0, tail = 1
 		return str;
@@ -31,7 +31,7 @@ inline char *bbx_enqueue(struct bbx_queue *q, char *str)
 
 inline struct bbx_queue *bbx_queue_init(int size)
 {
-	struct bbx_queue *q = malloc(sizeof(struct bbx_queue)+(sizeof(char*)*size));
+	struct bbx_queue *q = malloc(sizeof(struct bbx_queue)+(sizeof(struct afp)*size));
 	q->head = -1;
 	q->tail = 0;
 	q->cap = size;
@@ -46,7 +46,7 @@ inline void bbx_queue_show_stats(struct bbx_queue *q)
 			"*tail:\t%s\n"
 			"cap:\t%d\n",
 			q->head, q->tail,
-			q->args[q->head],
-			q->args[q->tail],
+			q->args[q->head].str,
+			q->args[q->tail].str,
 			q->cap);
 }

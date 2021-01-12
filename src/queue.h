@@ -1,5 +1,14 @@
+#include "flags.h"
+
 #define Q_SIZE 512
 #define Q_ERR 0 //null
+
+// par arg-flag
+struct
+afp {
+	bbx_flags flags;
+	char *str;
+};
 
 /* 
  * Esta struct e uma fila que guardara as strings a
@@ -11,7 +20,7 @@
 struct
 bbx_queue{
 	int head, tail, cap; //cap = capacidade
-	char *args[0]; 
+	struct afp args[0]; 
 };
 
 char *bbx_peek(struct bbx_queue *q);
