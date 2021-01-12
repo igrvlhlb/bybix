@@ -17,7 +17,6 @@
 #define		bbx_isanyf	((bbx_isfp) | (bbx_issn))
 
 /* opcoes para impressao */
-#define		NO_FLAGS		6	/* flags para impressao */
 #define 	bbx_char 		1	/* char (1 byte) */
 #define 	bbx_short 		2
 #define 	bbx_int 		4	   
@@ -26,7 +25,6 @@
 #define		bbx_str			32
 
 /* opcoes extras  */			
-#define		NO_MFLAGS		3
 #define 	bbx_hex			1
 #define		bbx_bin			2
 #define 	bbx_long		4

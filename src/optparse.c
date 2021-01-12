@@ -4,6 +4,7 @@
 #include "optparse.h"
 #include "flags.h"
 #include "queue.h"
+#include "tcheck.h"
 
 /*	importante:
  *		tipos = 	{c,h,i,f,p}
@@ -25,6 +26,7 @@ void bbx_opt_printf();
  * e os enfilera (getopt achara que sao opcoes) */
 void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]);
 void backup_argv(struct bbx_queue *q, int argc, char *argv[]);
+void print_ntype(char *num, bbx_flags flag);
 
 static  const 
 struct bbx_flag_s itags[NO_FLAGS] =
@@ -36,12 +38,24 @@ struct bbx_flag_s itags[NO_FLAGS] =
 	{bbx_word, "Word"},
 	{bbx_str, "Str"}
 };
+
 static const
 struct bbx_flag_s mtags[NO_MFLAGS] =
 {
 	{bbx_hex, "Hex"},
 	{bbx_bin, "Bin"},
-	{bbx_long, "Long"},
+	{bbx_long, "Long"}
+};
+
+static const
+struct bbx_flag_s ntypes[NO_NTYPES] =
+{
+	{bbx_issig, "Signed"},
+	{bbx_isdec, "Dec"},
+	{bbx_isbin, "Bin"},
+	{bbx_isoct, "Oct"},
+	{bbx_ishex, "Hex"},
+	{bbx_isfp, "Float"}
 };
 
 const char bbx_types[] = "chifwxblsV";
@@ -126,7 +140,7 @@ struct bbx_queue *parse_opt(int argc, char *argv[])
 	}
 FIM_OPT:
 	if(bbx_flag_isset(xflags, bbx_debug)) {
-		printf("%d opcoes foram lidas na entrada\n"
+		fprintf(stderr, "%d opcoes foram lidas na entrada\n"
 				"Flags para impressao:\t", iter);
 		bbx_opt_printf();
 	}
@@ -155,24 +169,25 @@ inline void bbx_chtof(bbx_flags fopt)
 inline void bbx_opt_printf()
 {
 	int impressos = 0;
-	putchar('[');
+	fputc('[', stderr);
 	for(int i = 0; i < NO_MFLAGS; i++){
 		if(bbx_flag_isset(xflags, mtags[i].bit)){
 			if( impressos != 0 ) printf(", ");
-			printf("%s", mtags[i].tag);
+			fprintf(stderr, "%s", mtags[i].tag);
 			impressos++;
 		}
 	}
 	for(int i = 0; i < NO_FLAGS; i++){
 		if(bbx_flag_isset(iflags, itags[i].bit)){
 			if( impressos != 0 ) printf(", ");
-			printf("%s", itags[i].tag);
+			fprintf(stderr, "%s", itags[i].tag);
 			impressos++;
 		}
 	}
-	printf("]\n");
+	fprintf(stderr, "]\n");
 }
 
+/*
 inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[])
 {
 	char *str;
@@ -196,6 +211,26 @@ inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[])
 		}
 	}
 }
+*/
+
+inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]){
+	char *str;
+	int optc = 0;
+	for(int i = 1; i < argc; i++){
+		str=argv[i]; //i-esimo argv
+		bbx_flags numflags = 0;
+		if((numflags = check_num(str))){
+			print_ntype(str, numflags);
+			if( bbx_enqueue(q, str) != Q_ERR ) continue;
+			else{
+				bbx_queue_show_stats(q);
+				exit(1);
+			}
+		}
+	}
+	bbx_queue_show_stats(q);
+}
+
 inline void backup_argv(struct bbx_queue *q, int argc, char *argv[])
 {
 	char *str;
@@ -207,4 +242,18 @@ inline void backup_argv(struct bbx_queue *q, int argc, char *argv[])
 			exit(1);
 		}
 	}
+}
+
+inline void print_ntype(char *num, bbx_flags flag){
+	int i, impressos = 0;
+	fprintf(stderr, "%s: ", num);
+	fputc('[', stderr);
+	for(int i = 0; i < NO_NTYPES; i++){
+		if(bbx_flag_isset(flag, ntypes[i].bit)){
+			if( impressos != 0 ) printf(", ");
+			fprintf(stderr, "%s", ntypes[i].tag);
+			impressos++;
+		}
+	}
+	fprintf(stderr, "]\n");
 }
