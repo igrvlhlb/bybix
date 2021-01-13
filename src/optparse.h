@@ -1,8 +1,8 @@
 #include "flags.h"
 
 #define		NO_FLAGS		6	/* flags para impressao */
-#define		NO_MFLAGS		3
-#define 	NO_NTYPES 		6
+#define		NO_MFLAGS		4
+#define 	NO_NTYPES 		7
 
 struct bbx_queue *parse_opt(int argc, char *argv[]);
 

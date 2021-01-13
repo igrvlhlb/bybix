@@ -19,10 +19,11 @@ inline char *bbx_dequeue(struct bbx_queue *q)
 	} else return Q_ERR; //vazia
 }
 
-inline char *bbx_enqueue(struct bbx_queue *q, char *str)
+inline char *bbx_enqueue(struct bbx_queue *q, char *str, bbx_flags flags)
 {
 	if( q->head != q->tail ){
 		q->args[q->tail].str = str; //adiciona ponteiro para string
+		q->args[q->tail].flags = flags;
 		q->tail = (q->tail + 1) % q->cap;
 		if( q->head == -1 ) q->head+=1; //lista populada; agora head = 0, tail = 1
 		return str;

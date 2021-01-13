@@ -14,7 +14,7 @@
 
 #define		bbx_isany	((bbx_isdec) | (bbx_isbin)\
 				|(bbx_isoct) | (bbx_ishex))
-#define		bbx_isanyf	((bbx_isfp) | (bbx_issn))
+#define		bbx_isanyf	((bbx_isfp) | (bbx_isnc))
 
 /* opcoes para impressao */
 #define 	bbx_char 		1	/* char (1 byte) */

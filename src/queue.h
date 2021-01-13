@@ -25,6 +25,6 @@ bbx_queue{
 
 char *bbx_peek(struct bbx_queue *q);
 char *bbx_dequeue(struct bbx_queue *q);
-char *bbx_enqueue(struct bbx_queue *q, char *str);
+char *bbx_enqueue(struct bbx_queue *q, char *str, bbx_flags flags);
 struct bbx_queue *bbx_queue_init(int size);
 void bbx_queue_show_stats(struct bbx_queue *q);

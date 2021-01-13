@@ -113,7 +113,8 @@ int check_is_dec(const char *num){
 		if (!isdigit(c)) {
 			if (c == '.' && !bbx_flag_isset(flag, bbx_isfp)) {
 				bbx_set_flag(flag, bbx_isfp);
-			} else if ((c == 'e') | (c == '-' && num[i-1] == 'e')) {
+			} else if ((c == 'e') || (c == '-' && num[i-1] == 'e')) {
+				bbx_set_flag(flag, bbx_isnc);
 				continue;
 			} else {
 				return 0;
@@ -148,5 +149,7 @@ bbx_flags check_num(char *num){
 			bbx_set_flag(loc_flags, tmp_flags);
 		}
 	}
+	if(!bbx_flag_isset(loc_flags, bbx_isany))
+		loc_flags = 0;
 	return loc_flags;
 }

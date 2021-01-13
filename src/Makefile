@@ -1,3 +1,5 @@
+CC = gcc
+CFLAGS = -O2 -Wall
 .PHONY : all clean
 
 all: queue.o optparse.o tcheck.o

@@ -27,6 +27,7 @@ void bbx_opt_printf();
 void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]);
 void backup_argv(struct bbx_queue *q, int argc, char *argv[]);
 void print_ntype(char *num, bbx_flags flag);
+void print_qntypes(struct bbx_queue *q);
 
 static  const 
 struct bbx_flag_s itags[NO_FLAGS] =
@@ -44,7 +45,8 @@ struct bbx_flag_s mtags[NO_MFLAGS] =
 {
 	{bbx_hex, "Hex"},
 	{bbx_bin, "Bin"},
-	{bbx_long, "Long"}
+	{bbx_long, "Long"},
+	{bbx_debug, "Debug"}
 };
 
 static const
@@ -55,7 +57,8 @@ struct bbx_flag_s ntypes[NO_NTYPES] =
 	{bbx_isbin, "Bin"},
 	{bbx_isoct, "Oct"},
 	{bbx_ishex, "Hex"},
-	{bbx_isfp, "Float"}
+	{bbx_isfp, "Float"},
+	{bbx_isnc, "Not. Cientifica"}
 };
 
 const char bbx_types[] = "chifwxblsV";
@@ -145,7 +148,11 @@ FIM_OPT:
 		bbx_opt_printf();
 	}
 	if(bbx_flag_isset(iflags, bbx_str)) retptr = argscpy;
-	else retptr = nums;
+	else {
+		retptr = nums;
+		if(bbx_flag_isset(xflags, bbx_debug))
+			print_qntypes(retptr);
+	}
 	return retptr;
 }
 
@@ -172,14 +179,14 @@ inline void bbx_opt_printf()
 	fputc('[', stderr);
 	for(int i = 0; i < NO_MFLAGS; i++){
 		if(bbx_flag_isset(xflags, mtags[i].bit)){
-			if( impressos != 0 ) printf(", ");
+			if( impressos != 0 ) fprintf(stderr, ", ");
 			fprintf(stderr, "%s", mtags[i].tag);
 			impressos++;
 		}
 	}
 	for(int i = 0; i < NO_FLAGS; i++){
 		if(bbx_flag_isset(iflags, itags[i].bit)){
-			if( impressos != 0 ) printf(", ");
+			if( impressos != 0 ) fprintf(stderr, ", ");
 			fprintf(stderr, "%s", itags[i].tag);
 			impressos++;
 		}
@@ -215,20 +222,19 @@ inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[])
 
 inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]){
 	char *str;
-	int optc = 0;
 	for(int i = 1; i < argc; i++){
 		str=argv[i]; //i-esimo argv
 		bbx_flags numflags = 0;
 		if((numflags = check_num(str))){
-			print_ntype(str, numflags);
-			if( bbx_enqueue(q, str) != Q_ERR ) continue;
+			//print_ntype(str, numflags); // debug
+			if( bbx_enqueue(q, str, numflags) != Q_ERR ) continue;
 			else{
-				bbx_queue_show_stats(q);
+				bbx_queue_show_stats(q); // debug
 				exit(1);
 			}
 		}
 	}
-	bbx_queue_show_stats(q);
+	bbx_queue_show_stats(q); // debug
 }
 
 inline void backup_argv(struct bbx_queue *q, int argc, char *argv[])
@@ -236,7 +242,7 @@ inline void backup_argv(struct bbx_queue *q, int argc, char *argv[])
 	char *str;
 	for(int i = 1; i < argc; i++){
 		str=argv[i]; //i-esimo argv
-		if( bbx_enqueue(q, argv[i]) != Q_ERR ) continue;
+		if( bbx_enqueue(q, str, 0) != Q_ERR ) continue;
 		else{
 			bbx_queue_show_stats(q);
 			exit(1);
@@ -248,12 +254,21 @@ inline void print_ntype(char *num, bbx_flags flag){
 	int i, impressos = 0;
 	fprintf(stderr, "%s: ", num);
 	fputc('[', stderr);
-	for(int i = 0; i < NO_NTYPES; i++){
+	for(i = 0; i < NO_NTYPES; i++){
 		if(bbx_flag_isset(flag, ntypes[i].bit)){
-			if( impressos != 0 ) printf(", ");
+			if( impressos != 0 ) fprintf(stderr, ", ");
 			fprintf(stderr, "%s", ntypes[i].tag);
 			impressos++;
 		}
 	}
 	fprintf(stderr, "]\n");
+}
+
+inline void print_qntypes(struct bbx_queue *q){
+	struct afp num;
+	int i;
+	for (i = q->head; i < q->tail; i++) {
+		num = q->args[i];
+		print_ntype(num.str, num.flags);
+	}
 }
