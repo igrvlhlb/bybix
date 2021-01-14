@@ -173,7 +173,7 @@ inline void bbx_chtof(bbx_flags fopt)
 	bbx_set_flag(xflags, fopt);
 }
 
-inline void bbx_opt_printf()
+void bbx_opt_printf()
 {
 	int impressos = 0;
 	fputc('[', stderr);
@@ -220,7 +220,7 @@ inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[])
 }
 */
 
-inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]){
+void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]){
 	char *str;
 	for(int i = 1; i < argc; i++){
 		str=argv[i]; //i-esimo argv
@@ -237,7 +237,7 @@ inline void enqueue_nums(struct bbx_queue *q, int argc, char *argv[]){
 	bbx_queue_show_stats(q); // debug
 }
 
-inline void backup_argv(struct bbx_queue *q, int argc, char *argv[])
+void backup_argv(struct bbx_queue *q, int argc, char *argv[])
 {
 	char *str;
 	for(int i = 1; i < argc; i++){
@@ -250,7 +250,7 @@ inline void backup_argv(struct bbx_queue *q, int argc, char *argv[])
 	}
 }
 
-inline void print_ntype(char *num, bbx_flags flag){
+void print_ntype(char *num, bbx_flags flag){
 	int i, impressos = 0;
 	fprintf(stderr, "%s: ", num);
 	fputc('[', stderr);
@@ -264,7 +264,7 @@ inline void print_ntype(char *num, bbx_flags flag){
 	fprintf(stderr, "]\n");
 }
 
-inline void print_qntypes(struct bbx_queue *q){
+void print_qntypes(struct bbx_queue *q){
 	struct afp num;
 	int i;
 	for (i = q->head; i < q->tail; i++) {
